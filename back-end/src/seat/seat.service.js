@@ -12,8 +12,8 @@ const update = (tableId, updatedTable) =>
     .where({ table_id: tableId })
     .update(updatedTable, '*')
 
-const destroy = (tableId) => {
-  knex('tables').where({ table_id: tableId }).del()
+const destroy = (reservationId) => {
+  knex('reservations').where({ reservation_id: reservationId }).del()
 }
 
 module.exports = {

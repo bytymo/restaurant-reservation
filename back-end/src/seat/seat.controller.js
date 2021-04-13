@@ -5,29 +5,26 @@ const asyncErrorBoundary = require('../errors/asyncErrorBoundary')
 // MIDDLEWARE //
 ////////////////
 
-function isValid(request, _, next) {
+async function seatExists(request, response, next) {
   if (!request.body.data)
     return next({
       status: 400,
       message: 'Data is missing!',
     })
 
-  next()
-}
-
-async function seatExists(request, response, next) {
-  const { reservation_id } = request.body.data
+  const reservationId = request.body.data.reservation_id
   const table = response.locals.table
   const { table_id, capacity } = table
+  let { reservation_id } = table
 
-  if (!reservation_id) {
+  if (!reservationId) {
     return next({
       status: 400,
       message: 'Missing reservation_id',
     })
   }
 
-  if (table.reservation_id) {
+  if (reservation_id) {
     return next({
       status: 400,
       message: 'Table is already occupied.',
@@ -35,14 +32,15 @@ async function seatExists(request, response, next) {
   }
 
   // Assign the reservation_id and then check if it is a valid reservation
-  table.reservation_id = reservation_id
 
-  let reservation = await service.read(reservation_id)
+  reservation_id = reservationId
+
+  let reservation = await service.read(reservationId)
 
   if (!reservation) {
     return next({
       status: 404,
-      message: `Reservation ${reservation_id} cannot be found.`,
+      message: `Reservation ${reservationId} cannot be found.`,
     })
   }
 
@@ -55,6 +53,8 @@ async function seatExists(request, response, next) {
 
   next()
 }
+
+// End of Middleware
 
 // Update
 async function update(request, response) {
@@ -70,24 +70,23 @@ async function update(request, response) {
 }
 
 // Delete
-function destroy(request, response) {
-  console.log('CONSOLE LOG: DESTROY', response.locals)
-  // const { reservation_id, table_id } = table
+async function destroy(request, response, next) {
+  const table = response.locals.table
+  const { table_id } = table
+  let { reservation_id } = table
 
-  // if (!reservation_id)
-  //   return next({
-  //     status: 400,
-  //     message: 'This table is not occupied.',
-  //   })
+  if (!reservation_id)
+    return next({
+      status: 400,
+      message: 'This table is not occupied.',
+    })
 
-  // service.delete(table_id).then(() => response.sendStatus(200))
+  const deleted = await service.destroy(reservation_id)
+  response.sendStatus(200)
+  reservation_id = null
 }
 
 module.exports = {
-  update: [
-    asyncErrorBoundary(isValid),
-    asyncErrorBoundary(seatExists),
-    asyncErrorBoundary(update),
-  ],
-  delete: [asyncErrorBoundary(seatExists), asyncErrorBoundary(destroy)],
+  update: [asyncErrorBoundary(seatExists), asyncErrorBoundary(update)],
+  delete: [asyncErrorBoundary(destroy)],
 }
