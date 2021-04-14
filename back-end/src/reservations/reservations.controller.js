@@ -23,7 +23,7 @@ async function reservationExists(request, response, next) {
   next(error)
 }
 
-async function validateNewReservation(request, response, next) {
+async function validateReservation(request, response, next) {
   if (!request.body.data) return next({ status: 400, message: 'Data Missing!' })
   const {
     first_name,
@@ -118,9 +118,22 @@ async function read(_, response) {
 }
 
 // Update
-async function update(request, response, next) {
+
+const update = async (request, response, next) => {
+  const { reservation } = response.locals
+
+  const updatedReservation = { ...reservation, ...request.body.data }
+  const { reservation_id } = reservation
+
+  const data = await service.update(reservation_id, updatedReservation)
+
+  response.json({ data: data[0] })
+}
+
+// Update Status
+async function updateStatus(request, response, next) {
   const newStatus = request.body.data.status
-  const validStatus = ['booked', 'seated', 'finished']
+  const validStatus = ['booked', 'seated', 'finished', 'cancelled']
   const { reservation } = response.locals
   const { reservation_id } = reservation
   let { status } = reservation
@@ -156,15 +169,21 @@ async function list(request, response) {
   response.json({ data: result })
 }
 
-// Search
-
 module.exports = {
   create: [
-    asyncErrorBoundary(validateNewReservation),
+    asyncErrorBoundary(validateReservation),
     asyncErrorBoundary(isValidDateTime),
     asyncErrorBoundary(create),
   ],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
-  update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(validateReservation),
+    asyncErrorBoundary(update),
+  ],
+  updateStatus: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(updateStatus),
+  ],
   list: [asyncErrorBoundary(list)],
 }
