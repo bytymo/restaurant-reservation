@@ -12,12 +12,14 @@ const update = (tableId, updatedTable) =>
     .where({ table_id: tableId })
     .update(updatedTable, '*')
 
-const destroy = (tableId) => {
-  knex('tables').where({ table_id: tableId }).del()
+const finish = (reservationId) => {
+  knex('reservations')
+    .where({ reservation_id: reservationId })
+    .update(status, 'finished')
 }
 
 module.exports = {
   read,
   update,
-  destroy,
+  finish,
 }

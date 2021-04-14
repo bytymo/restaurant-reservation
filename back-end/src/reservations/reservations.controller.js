@@ -32,6 +32,7 @@ async function validateNewReservation(request, response, next) {
     people,
     reservation_date,
     reservation_time,
+    status,
   } = request.body.data
   if (
     !first_name ||
@@ -52,6 +53,11 @@ async function validateNewReservation(request, response, next) {
     return next({ status: 400, message: 'reservation_time is invalid!' })
   if (typeof people !== 'number')
     return next({ status: 400, message: 'people is not a number!' })
+  if (!status) return (status = 'booked')
+  if (status === 'seated')
+    return next({ status: 400, message: 'reservation is already seated' })
+  if (status === 'finished')
+    return next({ status: 400, message: 'reservation is already finished' })
   response.locals.newReservation = {
     first_name,
     last_name,
@@ -59,6 +65,7 @@ async function validateNewReservation(request, response, next) {
     people,
     reservation_date,
     reservation_time,
+    status,
   }
   next()
 }
@@ -67,8 +74,6 @@ async function isValidDateTime(request, response, next) {
   const { reservation_date, reservation_time } = request.body.data
   let today = new Date()
   const resDate = new Date(reservation_date).toUTCString()
-
-  console.log(reservation_time)
 
   if (resDate.includes('Tue')) {
     return next({
@@ -112,14 +117,46 @@ async function read(_, response) {
   })
 }
 
+// Update
+async function update(request, response, next) {
+  const newStatus = request.body.data.status
+  const validStatus = ['booked', 'seated', 'finished']
+  const { reservation } = response.locals
+  const { reservation_id } = reservation
+  let { status } = reservation
+  if (!validStatus.includes(newStatus)) {
+    return next({
+      status: 400,
+      message: 'Cannot accept unknown status',
+    })
+  }
+  if (status === 'finished') {
+    return next({
+      status: 400,
+      message: 'Cannot change finished reservation',
+    })
+  }
+
+  const updatedReservation = { ...reservation, ...request.body.data }
+
+  const data = await service.update(reservation_id, updatedReservation)
+
+  response.json({ data: { status: newStatus } })
+}
+
 // List
 async function list(request, response) {
-  const { date } = request.query
+  const { date, mobile_number } = request.query
+  let result = null
 
-  const result = await service.list(date)
+  !date
+    ? (result = await service.search(mobile_number))
+    : (result = await service.list(date))
 
   response.json({ data: result })
 }
+
+// Search
 
 module.exports = {
   create: [
@@ -128,5 +165,6 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)],
   list: [asyncErrorBoundary(list)],
 }

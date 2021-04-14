@@ -42,16 +42,6 @@ async function validateNewTable(request, response, next) {
   next()
 }
 
-// async function validSeat(request, response, next) {
-//   if (!request.body.data)
-//     return next({
-//       status: 400,
-//       message: 'Data is missing!',
-//     })
-
-//   next()
-// }
-
 ////////////////////
 // END MIDDLEWARE //
 ////////////////////
@@ -71,17 +61,6 @@ async function read(_, response) {
   })
 }
 
-// Update
-// async function update(request, response) {
-//   const {
-//     table: { table_id, ...table },
-//   } = response.locals
-//   const updatedTable = { ...table, ...request.body.data }
-
-//   const data = await service.update(table_id, updatedTable)
-//   response.json({ data })
-// }
-
 // List
 async function list(_, response) {
   const tables = await service.list()
@@ -92,11 +71,6 @@ async function list(_, response) {
 module.exports = {
   create: [asyncErrorBoundary(validateNewTable), asyncErrorBoundary(create)],
   read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],
-  // update: [
-  //   asyncErrorBoundary(tableExists),
-  //   asyncErrorBoundary(validSeat),
-  //   asyncErrorBoundary(update),
-  // ],
   list: [asyncErrorBoundary(list)],
   tableExists,
 }
