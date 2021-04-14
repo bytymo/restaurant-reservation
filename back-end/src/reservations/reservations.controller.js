@@ -34,6 +34,7 @@ async function validateReservation(request, response, next) {
     reservation_time,
     status,
   } = request.body.data
+  let updatedStatus = status
   if (
     !first_name ||
     !last_name ||
@@ -53,7 +54,7 @@ async function validateReservation(request, response, next) {
     return next({ status: 400, message: 'reservation_time is invalid!' })
   if (typeof people !== 'number')
     return next({ status: 400, message: 'people is not a number!' })
-  if (!status) return (status = 'booked')
+  if (!status) updatedStatus = 'booked'
   if (status === 'seated')
     return next({ status: 400, message: 'reservation is already seated' })
   if (status === 'finished')
@@ -65,12 +66,12 @@ async function validateReservation(request, response, next) {
     people,
     reservation_date,
     reservation_time,
-    status,
+    status: updatedStatus,
   }
   next()
 }
 
-async function isValidDateTime(request, response, next) {
+async function isValidDateTime(request, _, next) {
   const { reservation_date, reservation_time } = request.body.data
   let today = new Date()
   const resDate = new Date(reservation_date).toUTCString()
@@ -119,7 +120,7 @@ async function read(_, response) {
 
 // Update
 
-const update = async (request, response, next) => {
+const update = async (request, response) => {
   const { reservation } = response.locals
 
   const updatedReservation = { ...reservation, ...request.body.data }
@@ -160,13 +161,17 @@ async function updateStatus(request, response, next) {
 // List
 async function list(request, response) {
   const { date, mobile_number } = request.query
-  let result = null
+  let results = null
 
   !date
-    ? (result = await service.search(mobile_number))
-    : (result = await service.list(date))
+    ? (results = await service.search(mobile_number))
+    : (results = await service.list(date))
 
-  response.json({ data: result })
+  results = results.filter((result) => {
+    return result.status !== 'finished'
+  })
+
+  response.json({ data: results })
 }
 
 module.exports = {

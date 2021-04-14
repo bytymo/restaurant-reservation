@@ -57,16 +57,22 @@ async function seatExists(request, response, next) {
 // End of Middleware
 
 // Update
-async function update(request, response) {
+async function update(request, response, next) {
   try {
     const { table } = response.locals
-    console.log('SEAT CONTROLLER UPDATE / REQ BODY DATA', request.body.data)
-
+    const { reservation_id } = request.body.data
     const { table_id } = request.params
 
-    const updatedTable = { ...table, ...request.body.data }
+    const reservation = await service.read(reservation_id)
+    if (reservation.status === 'seated') {
+      return next({
+        status: 400,
+        message: `Reservation ${reservation_id} has already been seated.`,
+      })
+    }
+    const updatedTable = { ...table, reservation_id }
 
-    const data = await service.update(table_id, updatedTable)
+    const data = await service.update(table_id, reservation_id, updatedTable)
 
     response.json({ data })
   } catch (err) {
@@ -78,7 +84,7 @@ async function update(request, response) {
 async function finish(request, response, next) {
   const table = response.locals.table
   const { table_id } = table
-  let { reservation_id, status } = table
+  let { reservation_id } = table
 
   if (!reservation_id)
     return next({
