@@ -58,22 +58,27 @@ async function seatExists(request, response, next) {
 
 // Update
 async function update(request, response) {
-  const { table } = response.locals
+  try {
+    const { table } = response.locals
+    console.log('SEAT CONTROLLER UPDATE / REQ BODY DATA', request.body.data)
 
-  const { table_id } = request.params
+    const { table_id } = request.params
 
-  const updatedTable = { ...table, ...request.body.data }
+    const updatedTable = { ...table, ...request.body.data }
 
-  const data = await service.update(table_id, updatedTable)
+    const data = await service.update(table_id, updatedTable)
 
-  response.json({ data })
+    response.json({ data })
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 // Delete
-async function destroy(request, response, next) {
+async function finish(request, response, next) {
   const table = response.locals.table
   const { table_id } = table
-  let { reservation_id } = table
+  let { reservation_id, status } = table
 
   if (!reservation_id)
     return next({
@@ -81,12 +86,14 @@ async function destroy(request, response, next) {
       message: 'This table is not occupied.',
     })
 
-  const deleted = await service.destroy(reservation_id)
-  response.sendStatus(200)
+  const deleted = await service.finish(reservation_id)
+
   reservation_id = null
+
+  response.sendStatus(200).json({ data: deleted })
 }
 
 module.exports = {
   update: [asyncErrorBoundary(seatExists), asyncErrorBoundary(update)],
-  delete: [asyncErrorBoundary(destroy)],
+  delete: [asyncErrorBoundary(finish)],
 }
