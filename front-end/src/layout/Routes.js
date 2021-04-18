@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import ReservationState from '../context/reservation/ReservationState'
 
 import { Redirect, Route, Switch } from 'react-router-dom'
 import Dashboard from '../dashboard/Dashboard'
@@ -16,30 +15,29 @@ import { today } from '../utils/date-time'
  */
 function Routes() {
   const [date, setDate] = useState(today())
+  const [current, setCurrent] = useState(null)
 
   return (
-    <ReservationState>
-      <Switch>
-        <Route exact={true} path='/'>
-          <Redirect to={'/dashboard'} />
-        </Route>
-        <Route exact={true} path='/reservations'>
-          <Redirect to={'/dashboard'} />
-        </Route>
-        <Route path='/dashboard/:date'>
-          <Dashboard date='2021-04-17' />
-        </Route>
-        <Route path='/dashboard'>
-          <Dashboard date={date} setDate={setDate} />
-        </Route>
-        <Route path='/reservations/new'>
-          <ReservationForm />
-        </Route>
-        <Route>
-          <NotFound />
-        </Route>
-      </Switch>
-    </ReservationState>
+    <Switch>
+      <Route exact={true} path='/'>
+        <Redirect to={'/dashboard'} />
+      </Route>
+      <Route exact={true} path='/reservations'>
+        <Redirect to={'/dashboard'} />
+      </Route>
+      {/* <Route path='/dashboard/:date'>
+        <Dashboard date='2020-12-30' />
+      </Route> */}
+      <Route path='/dashboard'>
+        <Dashboard date={date} setDate={setDate} />
+      </Route>
+      <Route path='/reservations/new'>
+        <ReservationForm current={current} setDate={setDate} />
+      </Route>
+      <Route>
+        <NotFound />
+      </Route>
+    </Switch>
   )
 }
 

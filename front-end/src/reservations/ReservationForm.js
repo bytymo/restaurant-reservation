@@ -1,11 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import ReservationContext from '../context/reservation/reservationContext'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
-const ReservationForm = () => {
+import { useHistory } from 'react-router-dom'
+import ErrorAlert from '../layout/ErrorAlert'
+
+const ReservationForm = ({ current, setDate }) => {
+  const url = process.env.REACT_APP_API_BASE_URL
+
   const history = useHistory()
-  const reservationContext = useContext(ReservationContext)
-  const { addReservation, updateReservation, current } = reservationContext
+  const [reservationsError, setReservationsError] = useState(null)
 
   useEffect(() => {
     if (current !== null) {
@@ -20,7 +23,7 @@ const ReservationForm = () => {
         people: 1,
       })
     }
-  }, [reservationContext, current])
+  }, [current])
 
   const [reservation, setReservation] = useState({
     first_name: '',
@@ -40,32 +43,72 @@ const ReservationForm = () => {
     people,
   } = reservation
 
+  // Add Reservation
+  const addReservation = (reservation) => {
+    axios
+      .post(`${url}/reservations`, { data: reservation })
+      .then((res) =>
+        res.status === 201
+          ? history.push(`/dashboard?date=${reservation.reservation_date}`)
+          : null
+      )
+      .catch((err) => {
+        setReservationsError({ message: err.response.data.error })
+      })
+  }
+
+  // Update Reservation
+  const updateReservation = async (reservation) => {
+    axios
+      .put(`${url}/reservations/${reservation.reservation_id}`, {
+        data: reservation,
+      })
+      .then((res) =>
+        res.status === 201
+          ? history.push(`/dashboard?date=${reservation.reservation_date}`)
+          : null
+      )
+      .catch((err) => {
+        setReservationsError({ message: err.response.data.error })
+      })
+  }
+
+  const shortenDate = (date) => {
+    return date.toISOString().slice(0, 10)
+  }
+
   const onChange = (e) =>
     setReservation({ ...reservation, [e.target.name]: e.target.value })
 
-  const handleCancel = () => {
-    history.goBack()
-  }
-
   const onSubmit = (e) => {
     e.preventDefault()
-    const { reservation_date } = reservation
-    if (current === null) {
-      addReservation(reservation)
-    } else {
-      updateReservation(reservation)
+    setReservationsError(null)
+    const newRes = {
+      first_name,
+      last_name,
+      mobile_number,
+      reservation_date,
+      reservation_time,
+      people: Number(people),
     }
-    // console.log(reservation)
-    history.push('/dashboard', { date: reservation_date })
+
+    if (current === null) {
+      addReservation(newRes)
+    } else {
+      updateReservation(newRes)
+    }
+    setDate(newRes.reservation_date)
   }
 
-  let date = new Date()
-  let today = date.toISOString().slice(0, 10)
+  let today = new Date()
+  today = shortenDate(today)
 
   return (
     <div>
       <form className='col-lg-10' onSubmit={onSubmit}>
         <h3 className='text-center py-4'>New Reservation</h3>
+
+        <ErrorAlert error={reservationsError} />
         <div className='form-group'>
           <label htmlFor='first_name'>First Name</label>
           <input
@@ -78,6 +121,7 @@ const ReservationForm = () => {
             required
           />
         </div>
+
         <div className='form-group'>
           <label htmlFor='last_name'>Last Name</label>
           <input
@@ -90,6 +134,7 @@ const ReservationForm = () => {
             required
           />
         </div>
+
         <div className='form-group'>
           <label htmlFor='mobile_number'>Mobile Number</label>
           <input
@@ -102,6 +147,7 @@ const ReservationForm = () => {
             required
           />
         </div>
+
         <div className='form-group'>
           <label htmlFor='reservation_date'>Reservation Date</label>
           <input
@@ -109,12 +155,12 @@ const ReservationForm = () => {
             type='date'
             name='reservation_date'
             id='reservation_date'
-            min={today}
             value={reservation_date}
             onChange={onChange}
             required
           />
         </div>
+
         <div className='form-group'>
           <label htmlFor='reservation_time'>Time</label>
           <input
@@ -122,13 +168,12 @@ const ReservationForm = () => {
             type='time'
             name='reservation_time'
             id='reservation_time'
-            min='10:30'
-            max='21:30'
             value={reservation_time}
             onChange={onChange}
             required
           />
         </div>
+
         <div className='form-group'>
           <label htmlFor='people'>Party Size</label>
           <input
@@ -137,7 +182,6 @@ const ReservationForm = () => {
             name='people'
             id='people'
             min='1'
-            max='12'
             value={people}
             onChange={onChange}
             required
@@ -148,7 +192,11 @@ const ReservationForm = () => {
           <button className='btn btn-primary mr-2' type='submit'>
             Submit
           </button>
-          <button onClick={handleCancel} className='btn btn-secondary'>
+
+          <button
+            onClick={() => history.goBack()}
+            className='btn btn-secondary'
+          >
             Cancel
           </button>
         </div>
