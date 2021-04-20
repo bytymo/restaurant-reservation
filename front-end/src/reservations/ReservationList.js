@@ -1,33 +1,71 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { Fragment } from 'react'
+import axios from 'axios'
 
-const ReservationList = ({ reservation }) => {
+import { Link, useHistory } from 'react-router-dom'
+
+const ReservationList = ({ url, reservation }) => {
+  const history = useHistory()
   const {
     reservation_id,
     first_name,
     last_name,
     people,
     reservation_time,
+    status,
   } = reservation
+
+  const cancelReservation = (e) => {
+    window.confirm(
+      'Do you want to cancel this reservation? This cannot be undone.'
+    ) &&
+      axios
+        .put(`${url}/reservations/${reservation_id}/status`, {
+          data: { status: 'cancelled' },
+        })
+        .then((res) => {
+          res.status === 200 && history.push('/')
+        })
+  }
+
   return (
     <div key={reservation_id} className='card mt-3 h-100'>
-      <div className='card-header'>
-        {' '}
-        <button type='button' className='btn btn-light float-right' disabled>
+      <div className='card-header d-flex align-items-center'>
+        <h4 className='my-0'>
+          {reservation_time.slice(0, 5)} - {last_name}, {first_name}
+        </h4>
+        <p className='ml-auto my-0'>
           Party: <span className='badge badge-secondary'>{people}</span>
-        </button>
-        <h4>{reservation_time.slice(0, 5)}</h4>
+        </p>
       </div>
-      <div className='card-body'>
-        <Link
-          to={`/reservations/${reservation_id}/seat`}
-          className='btn btn-danger float-right'
-        >
-          Seat
-        </Link>
-        <h5 className='card-title align-self-center'>
-          {last_name}, {first_name}
+      <div className='card-body d-flex align-items-center'>
+        <h5 data-reservation-id-status={reservation_id} className='my-0'>
+          Status: {status.toUpperCase()}
         </h5>
+        <div className='btns ml-auto'>
+          {status === 'booked' && (
+            <Fragment>
+              <Link
+                to={`/reservations/${reservation_id}/seat`}
+                className='btn btn-primary mr-2'
+              >
+                Seat
+              </Link>
+              <Link
+                to={`/reservations/${reservation_id}/edit`}
+                className='btn btn-info mr-2'
+              >
+                Edit
+              </Link>
+              <button
+                data-reservation-id-cancel={reservation_id}
+                onClick={cancelReservation}
+                className='btn btn-secondary'
+              >
+                Cancel
+              </button>
+            </Fragment>
+          )}
+        </div>
       </div>
     </div>
   )

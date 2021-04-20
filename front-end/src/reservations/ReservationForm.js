@@ -1,57 +1,47 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { API_BASE_URL as url, findReservation } from '../utils/api'
 
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router'
 import ErrorAlert from '../layout/ErrorAlert'
 
-const ReservationForm = ({ current, setDate }) => {
-  const url = process.env.REACT_APP_API_BASE_URL
-
+const ReservationForm = ({ setDate }) => {
   const history = useHistory()
-  const [reservationsError, setReservationsError] = useState(null)
-
-  useEffect(() => {
-    if (current !== null) {
-      setReservation(current)
-    } else {
-      setReservation({
-        first_name: '',
-        last_name: '',
-        mobile_number: '',
-        reservation_date: '',
-        reservation_time: '',
-        people: 1,
-      })
-    }
-  }, [current])
-
+  const { reservation_id } = useParams()
+  const [isUpdating, setIsUpdating] = useState(false)
   const [reservation, setReservation] = useState({
     first_name: '',
     last_name: '',
     mobile_number: '',
     reservation_date: '',
     reservation_time: '',
-    people: 1,
+    people: '',
   })
+  const [reservationsError, setReservationsError] = useState(null)
 
-  const {
-    first_name,
-    last_name,
-    mobile_number,
-    reservation_date,
-    reservation_time,
-    people,
-  } = reservation
+  useEffect(() => {
+    const abortController = new AbortController()
+    findReservation(reservation_id).then(setReservation)
+    reservation.reservation_id ? setIsUpdating(true) : setIsUpdating(false)
+    return () => abortController.abort()
+    // eslint-disable-next-line
+  }, [])
+
+  const { first_name, last_name, mobile_number, reservation_time } = reservation
+
+  let { reservation_date, people } = reservation
+
+  if (isUpdating)
+    reservation.reservation_date = reservation.reservation_date.slice(0, 10)
 
   // Add Reservation
   const addReservation = (reservation) => {
     axios
       .post(`${url}/reservations`, { data: reservation })
-      .then((res) =>
-        res.status === 201
-          ? history.push(`/dashboard?date=${reservation.reservation_date}`)
-          : null
-      )
+      .then((res) => {
+        res.status === 201 &&
+          history.push(`/dashboard?date=${reservation.reservation_date}`)
+      })
       .catch((err) => {
         setReservationsError({ message: err.response.data.error })
       })
@@ -63,18 +53,13 @@ const ReservationForm = ({ current, setDate }) => {
       .put(`${url}/reservations/${reservation.reservation_id}`, {
         data: reservation,
       })
-      .then((res) =>
-        res.status === 201
-          ? history.push(`/dashboard?date=${reservation.reservation_date}`)
-          : null
-      )
+      .then((res) => {
+        res.status === 200 &&
+          history.push(`/dashboard?date=${reservation.reservation_date}`)
+      })
       .catch((err) => {
         setReservationsError({ message: err.response.data.error })
       })
-  }
-
-  const shortenDate = (date) => {
-    return date.toISOString().slice(0, 10)
   }
 
   const onChange = (e) =>
@@ -83,30 +68,22 @@ const ReservationForm = ({ current, setDate }) => {
   const onSubmit = (e) => {
     e.preventDefault()
     setReservationsError(null)
-    const newRes = {
-      first_name,
-      last_name,
-      mobile_number,
-      reservation_date,
-      reservation_time,
-      people: Number(people),
-    }
+    reservation.people = Number(reservation.people)
 
-    if (current === null) {
-      addReservation(newRes)
+    if (!isUpdating) {
+      addReservation(reservation)
     } else {
-      updateReservation(newRes)
+      updateReservation(reservation)
     }
-    setDate(newRes.reservation_date)
+    setDate(reservation.reservation_date)
   }
-
-  let today = new Date()
-  today = shortenDate(today)
 
   return (
     <div>
       <form className='col-lg-10' onSubmit={onSubmit}>
-        <h3 className='text-center py-4'>New Reservation</h3>
+        <h3 className='text-center py-4'>
+          {reservation.reservation_id ? 'Edit' : 'New'} Reservation
+        </h3>
 
         <ErrorAlert error={reservationsError} />
         <div className='form-group'>
@@ -178,10 +155,10 @@ const ReservationForm = ({ current, setDate }) => {
           <label htmlFor='people'>Party Size</label>
           <input
             className='form-control'
-            type='number'
+            type='text'
             name='people'
             id='people'
-            min='1'
+            placeholder="Please enter your party's size"
             value={people}
             onChange={onChange}
             required
