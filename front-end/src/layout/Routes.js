@@ -8,7 +8,7 @@ import Search from '../search/Search'
 import TableForm from '../tables/TableForm'
 import NotFound from './NotFound'
 import { today } from '../utils/date-time'
-
+import useQuery from '../utils/useQuery'
 /**
  * Defines all the routes for the application.
  *
@@ -17,24 +17,29 @@ import { today } from '../utils/date-time'
  * @returns {JSX.Element}
  */
 function Routes() {
-  const [date, setDate] = useState(today())
+  const query = useQuery()
+  const [date, setDate] = useState(query.get('date') || today())
 
   return (
     <Switch>
       <Route exact={true} path='/'>
         <Redirect to={'/dashboard'} />
       </Route>
+
       <Route exact={true} path='/reservations'>
         <Redirect to={'/dashboard'} />
       </Route>
+
       <Route path='/dashboard'>
         <Dashboard date={date} setDate={setDate} />
       </Route>
-      <Route exact path='/reservations/:reservation_id/seat'>
+
+      <Route exact={true} path='/reservations/:reservation_id/seat'>
         <SeatForm />
       </Route>
+
       <Route
-        exact
+        exact={true}
         path={['/reservations/new', '/reservations/:reservation_id/edit']}
       >
         <ReservationForm setDate={setDate} />
@@ -43,9 +48,11 @@ function Routes() {
       <Route path='/tables/new'>
         <TableForm />
       </Route>
-      <Route>
+
+      <Route path='/search'>
         <Search />
       </Route>
+
       <Route>
         <NotFound />
       </Route>

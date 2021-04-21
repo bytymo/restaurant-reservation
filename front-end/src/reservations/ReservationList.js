@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
-import axios from 'axios'
-
 import { Link, useHistory } from 'react-router-dom'
+import axios from 'axios'
+import { API_BASE_URL as url } from '../utils/api'
 
-const ReservationList = ({ url, reservation }) => {
+const ReservationList = ({ reservation }) => {
   const history = useHistory()
   const {
     reservation_id,
@@ -14,7 +14,7 @@ const ReservationList = ({ url, reservation }) => {
     status,
   } = reservation
 
-  const cancelReservation = (e) => {
+  const cancelReservation = () => {
     window.confirm(
       'Do you want to cancel this reservation? This cannot be undone.'
     ) &&
@@ -28,7 +28,8 @@ const ReservationList = ({ url, reservation }) => {
   }
 
   return (
-    <div key={reservation_id} className='card mt-3 h-100'>
+    <div className='card mt-3 h-100'>
+      {/* <a href='/reservations/6/seat'>Seat</a> */}
       <div className='card-header d-flex align-items-center'>
         <h4 className='my-0'>
           {reservation_time.slice(0, 5)} - {last_name}, {first_name}
@@ -41,12 +42,12 @@ const ReservationList = ({ url, reservation }) => {
         <h5 data-reservation-id-status={reservation_id} className='my-0'>
           Status: {status.toUpperCase()}
         </h5>
-        <div className='btns ml-auto'>
+        <div className='buttons ml-auto'>
           {status === 'booked' && (
             <Fragment>
               <Link
                 to={`/reservations/${reservation_id}/seat`}
-                className='btn btn-primary mr-2'
+                className='btn btn-primary mr-2 seatBtn'
               >
                 Seat
               </Link>
