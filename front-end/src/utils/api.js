@@ -21,7 +21,7 @@ headers.append('Content-Type', 'application/json')
  * This function is NOT exported because it is not needed outside of this file.
  *
  * @param url
- *  the url for the requst.
+ *  the url for the request.
  * @param options
  *  any options for fetch
  * @param onCancel
@@ -39,7 +39,6 @@ async function fetchJson(url, options, onCancel) {
     }
 
     const payload = await response.json()
-
     if (payload.error) {
       return Promise.reject({ message: payload.error })
     }

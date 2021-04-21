@@ -8,7 +8,6 @@ import ErrorAlert from '../layout/ErrorAlert'
 const ReservationForm = ({ setDate }) => {
   const history = useHistory()
   const { reservation_id } = useParams()
-  const [isUpdating, setIsUpdating] = useState(false)
   const [reservation, setReservation] = useState({
     first_name: '',
     last_name: '',
@@ -22,7 +21,6 @@ const ReservationForm = ({ setDate }) => {
   useEffect(() => {
     const abortController = new AbortController()
     findReservation(reservation_id).then(setReservation)
-    reservation.reservation_id ? setIsUpdating(true) : setIsUpdating(false)
     return () => abortController.abort()
     // eslint-disable-next-line
   }, [])
@@ -31,8 +29,7 @@ const ReservationForm = ({ setDate }) => {
 
   let { reservation_date, people } = reservation
 
-  if (isUpdating)
-    reservation.reservation_date = reservation.reservation_date.slice(0, 10)
+  reservation.reservation_date = reservation.reservation_date.slice(0, 10)
 
   // Add Reservation
   const addReservation = (reservation) => {
@@ -70,7 +67,7 @@ const ReservationForm = ({ setDate }) => {
     setReservationsError(null)
     reservation.people = Number(reservation.people)
 
-    if (!isUpdating) {
+    if (!reservation_id) {
       addReservation(reservation)
     } else {
       updateReservation(reservation)

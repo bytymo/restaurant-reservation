@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { findReservation } from '../utils/api'
+import { API_BASE_URL as url, findReservation } from '../utils/api'
 
-const TableList = ({ url, table }) => {
+const TableList = ({ table }) => {
   const [reservation, setReservation] = useState([])
   const { table_id, table_name, capacity, reservation_id } = table
 
@@ -17,10 +17,10 @@ const TableList = ({ url, table }) => {
 
   if (reservation_id === null) {
     status = 'info'
-    name = 'Free'
+    name = 'free'
   } else {
     status = 'danger'
-    name = 'Occupied'
+    name = 'occupied'
   }
 
   const finishReservation = (e) => {
@@ -30,7 +30,7 @@ const TableList = ({ url, table }) => {
       'Is this table ready to seat new guests? This cannot be undone.'
     ) &&
       axios.delete(`${url}/tables/${table_id}/seat`).then((res) => {
-        res.status === 200 && window.location.reload(false)
+        res.status === 200 && window.location.reload()
       })
   }
 
@@ -38,7 +38,7 @@ const TableList = ({ url, table }) => {
     <div key={table_id} className='card mt-3 h-100'>
       <div className='card-header'>
         {' '}
-        <div className='float-right' data-table-id-status={`${table.table_id}`}>
+        <div className='float-right' data-table-id-status={table_id}>
           Status:{' '}
           <span className={`badge badge-pill badge-${status}`}>{name}</span>
         </div>

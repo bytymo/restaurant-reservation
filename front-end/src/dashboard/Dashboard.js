@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import DashButtons from './DashButtons'
 import ErrorAlert from '../layout/ErrorAlert'
-import { API_BASE_URL as url, listReservations, listTables } from '../utils/api'
+import { listReservations, listTables } from '../utils/api'
 import ReservationList from '../reservations/ReservationList'
 import TableList from '../tables/TableList'
 
@@ -16,12 +16,7 @@ function Dashboard({ date, setDate }) {
   const [reservationsError, setReservationsError] = useState(null)
   const [tables, setTables] = useState([])
   const [tablesError, setTablesError] = useState(null)
-
-  useEffect(
-    loadDashboard,
-    // eslint-disable-next-line
-    [date]
-  )
+  useEffect(loadDashboard, [date])
 
   function loadDashboard() {
     const abortController = new AbortController()
@@ -45,24 +40,30 @@ function Dashboard({ date, setDate }) {
         <ErrorAlert error={tablesError} />
 
         <h3 className='mt-3'>Reservations:</h3>
-        {reservations.length ? (
+        {/* <a href='/reservations/6/seat'>Seat</a> */}
+        {/* {reservations.length ? (
           reservations.map((reservation, index) => (
             <ReservationList url={url} reservation={reservation} key={index} />
           ))
         ) : (
           <h5>There are no reservations for {date}</h5>
+        )} */}
+        {reservations.length === 0 && (
+          <h5>There are no reservations for {date}</h5>
         )}
+        {reservations.map((reservation) => (
+          <ReservationList
+            reservation={reservation}
+            key={reservation.reservation_id}
+          />
+        ))}
 
         <hr />
 
         <h3 className='mt-3'>Tables</h3>
-        {tables ? (
-          tables.map((table, index) => (
-            <TableList url={url} table={table} key={index} />
-          ))
-        ) : (
-          <h3>There are no tables currently available</h3>
-        )}
+        {tables.map((table) => (
+          <TableList table={table} key={table.table_id} />
+        ))}
       </div>
     </main>
   )
