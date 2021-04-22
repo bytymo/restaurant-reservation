@@ -29,7 +29,6 @@ const ReservationList = ({ reservation }) => {
 
   return (
     <div className='card mt-3 h-100'>
-      {/* <a href='/reservations/6/seat'>Seat</a> */}
       <div className='card-header d-flex align-items-center'>
         <h4 className='my-0'>
           {reservation_time.slice(0, 5)} - {last_name}, {first_name}

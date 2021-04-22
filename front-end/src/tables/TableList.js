@@ -35,7 +35,7 @@ const TableList = ({ table }) => {
   }
 
   return (
-    <div key={table_id} className='card mt-3 h-100'>
+    <div className='card mt-3 h-100'>
       <div className='card-header'>
         {' '}
         <div className='float-right' data-table-id-status={table_id}>

@@ -16,11 +16,13 @@ function Dashboard({ date, setDate }) {
   const [reservationsError, setReservationsError] = useState(null)
   const [tables, setTables] = useState([])
   const [tablesError, setTablesError] = useState(null)
+
   useEffect(loadDashboard, [date])
 
   function loadDashboard() {
     const abortController = new AbortController()
     setReservationsError(null)
+    setTablesError(null)
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError)
@@ -40,29 +42,22 @@ function Dashboard({ date, setDate }) {
         <ErrorAlert error={tablesError} />
 
         <h3 className='mt-3'>Reservations:</h3>
-        {/* <a href='/reservations/6/seat'>Seat</a> */}
-        {/* {reservations.length ? (
-          reservations.map((reservation, index) => (
-            <ReservationList url={url} reservation={reservation} key={index} />
-          ))
-        ) : (
-          <h5>There are no reservations for {date}</h5>
-        )} */}
         {reservations.length === 0 && (
           <h5>There are no reservations for {date}</h5>
         )}
+
         {reservations.map((reservation) => (
           <ReservationList
-            reservation={reservation}
             key={reservation.reservation_id}
+            reservation={reservation}
           />
         ))}
 
         <hr />
 
-        <h3 className='mt-3'>Tables</h3>
+        <h3 className='mt-3'>Tables:</h3>
         {tables.map((table) => (
-          <TableList table={table} key={table.table_id} />
+          <TableList key={table.table_id} table={table} />
         ))}
       </div>
     </main>
