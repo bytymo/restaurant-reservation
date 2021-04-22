@@ -81,9 +81,8 @@ async function update(request, response, next) {
 }
 
 // Delete
-async function finish(request, response, next) {
+async function finish(_, response, next) {
   const table = response.locals.table
-  const { table_id } = table
   let { reservation_id } = table
 
   if (!reservation_id)
@@ -93,8 +92,6 @@ async function finish(request, response, next) {
     })
 
   const deleted = await service.finish(reservation_id)
-
-  reservation_id = null
 
   response.sendStatus(200).json({ data: deleted })
 }
