@@ -10,17 +10,16 @@ const TableList = ({ table }) => {
     const abortController = new AbortController()
     reservation_id && findReservation(reservation_id).then(setReservation)
     return () => abortController.abort()
-    // eslint-disable-next-line
-  }, [])
+  }, [table, reservation_id])
 
-  let status, name
+  let badgeColor, badgeName
 
   if (reservation_id === null) {
-    status = 'info'
-    name = 'free'
+    badgeColor = 'info'
+    badgeName = 'free'
   } else {
-    status = 'danger'
-    name = 'occupied'
+    badgeColor = 'danger'
+    badgeName = 'occupied'
   }
 
   const finishReservation = (e) => {
@@ -40,7 +39,9 @@ const TableList = ({ table }) => {
         {' '}
         <div className='float-right' data-table-id-status={table_id}>
           Status:{' '}
-          <span className={`badge badge-pill badge-${status}`}>{name}</span>
+          <span className={`badge badge-pill badge-${badgeColor}`}>
+            {badgeName}
+          </span>
         </div>
         <h4>{table_name}</h4>
       </div>

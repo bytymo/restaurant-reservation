@@ -162,7 +162,7 @@ const ReservationForm = ({ setDate }) => {
           />
         </div>
 
-        <div className='btns mt-2'>
+        <div className='buttons mt-2'>
           <button className='btn btn-primary mr-2' type='submit'>
             Submit
           </button>
