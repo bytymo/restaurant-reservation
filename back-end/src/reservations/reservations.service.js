@@ -1,16 +1,7 @@
 const knex = require('../db/connection')
 
 const create = (newReservation) =>
-  knex('reservations')
-    .insert(newReservation)
-    .returning([
-      'first_name',
-      'last_name',
-      'mobile_number',
-      'reservation_date',
-      'reservation_time',
-      'people',
-    ])
+  knex('reservations').insert(newReservation).returning('*')
 
 const read = (reservationId) =>
   knex('reservations')
