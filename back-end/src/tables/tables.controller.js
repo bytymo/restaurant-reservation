@@ -22,7 +22,7 @@ async function tableExists(request, response, next) {
 
 async function validateNewTable(request, response, next) {
   if (!request.body.data) return next({ status: 400, message: 'Data Missing!' })
-  const { table_name, capacity } = request.body.data
+  const { table_name, capacity, reservation_id } = request.body.data
   if (!table_name || !capacity)
     return next({
       status: 400,
@@ -38,6 +38,7 @@ async function validateNewTable(request, response, next) {
   response.locals.table = {
     table_name,
     capacity,
+    reservation_id,
   }
   next()
 }

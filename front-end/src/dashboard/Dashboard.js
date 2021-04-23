@@ -26,7 +26,12 @@ function Dashboard({ date, setDate }) {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError)
-    listTables().then(setTables).catch(setTablesError)
+    listTables()
+      .then((tables) => {
+        return tables
+      })
+      .then(setTables)
+      .catch(setTablesError)
     return () => abortController.abort()
   }
 
@@ -57,7 +62,11 @@ function Dashboard({ date, setDate }) {
 
         <h3 className='mt-3'>Tables:</h3>
         {tables.map((table) => (
-          <TableList key={table.table_id} table={table} />
+          <TableList
+            key={table.table_id}
+            table={table}
+            loadDashboard={loadDashboard}
+          />
         ))}
       </div>
     </main>

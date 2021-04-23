@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { API_BASE_URL as url, findReservation } from '../utils/api'
 
-const TableList = ({ table }) => {
+const TableList = ({ table, loadDashboard }) => {
   const [reservation, setReservation] = useState([])
   const { table_id, table_name, capacity, reservation_id } = table
 
@@ -29,7 +29,7 @@ const TableList = ({ table }) => {
       'Is this table ready to seat new guests? This cannot be undone.'
     ) &&
       axios.delete(`${url}/tables/${table_id}/seat`).then((res) => {
-        res.status === 200 && window.location.reload()
+        res.status === 200 && loadDashboard()
       })
   }
 
