@@ -28,7 +28,7 @@ const ReservationList = ({ reservation }) => {
   }
 
   return (
-    <div className='card mt-3 h-100'>
+    <div className='card my-2'>
       <div className='card-header d-flex align-items-center'>
         <h4 className='my-0'>
           {reservation_time.slice(0, 5)} - {last_name}, {first_name}
@@ -41,28 +41,32 @@ const ReservationList = ({ reservation }) => {
         <h5 data-reservation-id-status={reservation_id} className='my-0'>
           Status: {status.toUpperCase()}
         </h5>
-        <div className='buttons ml-auto'>
+        <div className='d-inline-block ml-auto row row-cols-1'>
           {status === 'booked' && (
             <Fragment>
-              <Link
-                to={`/reservations/${reservation_id}/seat`}
-                className='btn btn-primary mr-2 seatBtn'
-              >
-                Seat
-              </Link>
-              <Link
-                to={`/reservations/${reservation_id}/edit`}
-                className='btn btn-info mr-2'
-              >
-                Edit
-              </Link>
-              <button
-                data-reservation-id-cancel={reservation_id}
-                onClick={cancelReservation}
-                className='btn btn-secondary'
-              >
-                Cancel
-              </button>
+              <div className='col mb-2 justify-content-between'>
+                <Link
+                  to={`/reservations/${reservation_id}/seat`}
+                  className='btn btn-dark d-block d-md-inline'
+                >
+                  <i class='fas fa-arrow-circle-down'></i> Seat
+                </Link>{' '}
+                <Link
+                  to={`/reservations/${reservation_id}/edit`}
+                  className='btn btn-dark d-block d-md-inline'
+                >
+                  <i class='fas fa-pencil-alt'></i> Edit
+                </Link>
+              </div>
+              <div className='col'>
+                <button
+                  data-reservation-id-cancel={reservation_id}
+                  onClick={cancelReservation}
+                  className='btn btn-danger d-block d-md-inline w-100'
+                >
+                  <i class='fas fa-ban'></i> Cancel
+                </button>
+              </div>
             </Fragment>
           )}
         </div>

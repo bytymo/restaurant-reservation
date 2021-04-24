@@ -15,7 +15,7 @@ const TableList = ({ table, loadDashboard }) => {
   let badgeColor, badgeName
 
   if (reservation_id === null) {
-    badgeColor = 'info'
+    badgeColor = 'success'
     badgeName = 'free'
   } else {
     badgeColor = 'danger'
@@ -34,32 +34,31 @@ const TableList = ({ table, loadDashboard }) => {
   }
 
   return (
-    <div className='card mt-3 h-100'>
-      <div className='card-header'>
-        {' '}
-        <div className='float-right' data-table-id-status={table_id}>
+    <div className='card my-2'>
+      <div className='card-header d-flex align-items-center'>
+        <h4 className='my-0'>{table_name}</h4>
+        <div className='my-0 ml-auto ' data-table-id-status={table_id}>
           Status:{' '}
           <span className={`badge badge-pill badge-${badgeColor}`}>
             {badgeName}
           </span>
         </div>
-        <h4>{table_name}</h4>
       </div>
-      <div className='card-body'>
-        {reservation_id && (
-          <button
-            onClick={finishReservation}
-            className='btn btn-danger float-right'
-            data-table-id-finish={table_id}
-          >
-            Finish
-          </button>
-        )}
-        <h5 className='card-title align-self-center'>
+      <div className='card-body d-flex align-items-center'>
+        <h5 className='card-title my-0'>
           {reservation_id
             ? `Reserved: ${reservation.last_name}, ${reservation.first_name} (${reservation.people})`
             : `Capacity: ${capacity}`}
         </h5>
+        {reservation_id && (
+          <button
+            onClick={finishReservation}
+            className='btn btn-danger ml-auto'
+            data-table-id-finish={table_id}
+          >
+            <i class='fas fa-check-circle'></i> Finish
+          </button>
+        )}
       </div>
     </div>
   )

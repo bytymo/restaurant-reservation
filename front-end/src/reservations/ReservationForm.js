@@ -20,7 +20,7 @@ const ReservationForm = ({ setDate }) => {
 
   useEffect(() => {
     const abortController = new AbortController()
-    findReservation(reservation_id).then(setReservation)
+    reservation_id && findReservation(reservation_id).then(setReservation)
     return () => abortController.abort()
     // eslint-disable-next-line
   }, [])
