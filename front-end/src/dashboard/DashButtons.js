@@ -7,12 +7,12 @@ const DashButtons = ({ date, setDate }) => {
   const nextDay = next(date)
 
   return (
-    <div className='buttons d-flex justify-content-between ml-0'>
+    <div className='buttons d-flex justify-content-center ml-0'>
       <button className='btn btn-dark' onClick={() => setDate(prevDay)}>
         {' '}
         <i className='fas fa-chevron-left' /> Previous
       </button>
-      <button className='btn btn-dark' onClick={() => setDate(day)}>
+      <button className='btn btn-dark mx-3' onClick={() => setDate(day)}>
         Today
       </button>
       <button className='btn btn-dark' onClick={() => setDate(nextDay)}>

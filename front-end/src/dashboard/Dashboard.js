@@ -37,37 +37,49 @@ function Dashboard({ date, setDate }) {
 
   return (
     <main>
-      <h1>Dashboard</h1>
-      <div className='d-md-flex mb-5'>
-        <h4 className='mb-0'>Reservations for {date}</h4>
+      <div className='group-item d-lg-inline-block'>
+        <h1>Dashboard</h1>
+        <div className='d-md-flex'>
+          <h4 className='mb-0'>Reservations for {date}</h4>
+        </div>
       </div>
-      <div className='col-lg-10 w-100'>
+
+      <div className=' w-100'>
         <DashButtons date={date} setDate={setDate} />
         <ErrorAlert error={reservationsError} />
         <ErrorAlert error={tablesError} />
+        <div className='container align-self-center'>
+          <div className='row justify-content-around'>
+            <div className='group col-lg-6 w-100'>
+              <h3>Reservations:</h3>
+              <div className='group-item'>
+                {reservations.length === 0 && (
+                  <h5>There are no reservations for {date}</h5>
+                )}
 
-        <h3 className='mt-3'>Reservations:</h3>
-        {reservations.length === 0 && (
-          <h5>There are no reservations for {date}</h5>
-        )}
+                {reservations.map((reservation) => (
+                  <ReservationList
+                    key={reservation.reservation_id}
+                    reservation={reservation}
+                  />
+                ))}
+              </div>
+            </div>
 
-        {reservations.map((reservation) => (
-          <ReservationList
-            key={reservation.reservation_id}
-            reservation={reservation}
-          />
-        ))}
-
-        <hr />
-
-        <h3 className='mt-3'>Tables:</h3>
-        {tables.map((table) => (
-          <TableList
-            key={table.table_id}
-            table={table}
-            loadDashboard={loadDashboard}
-          />
-        ))}
+            <div className='group col-lg-5 w-100'>
+              <h3>Tables:</h3>
+              <div className='group-item'>
+                {tables.map((table) => (
+                  <TableList
+                    key={table.table_id}
+                    table={table}
+                    loadDashboard={loadDashboard}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   )
