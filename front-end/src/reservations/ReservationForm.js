@@ -76,11 +76,11 @@ const ReservationForm = ({ setDate }) => {
   }
 
   return (
-    <div>
+    <div className='row justify-content-center'>
       <form className='col-lg-10' onSubmit={onSubmit}>
-        <h3 className='text-center py-4'>
+        <h1 className='text-center py-4'>
           {reservation.reservation_id ? 'Edit' : 'New'} Reservation
-        </h3>
+        </h1>
 
         <ErrorAlert error={reservationsError} />
         <div className='form-group'>
@@ -163,7 +163,7 @@ const ReservationForm = ({ setDate }) => {
         </div>
 
         <div className='buttons mt-2'>
-          <button className='btn btn-primary mr-2' type='submit'>
+          <button className='btn btn-dark mr-2' type='submit'>
             Submit
           </button>
 

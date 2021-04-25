@@ -34,9 +34,9 @@ const TableList = ({ table, loadDashboard }) => {
   }
 
   return (
-    <div className='card my-2'>
+    <div className='card text-white  my-2 card-bg'>
       <div className='card-header d-flex align-items-center'>
-        <h4 className='my-0'>{table_name}</h4>
+        <h5 className='my-0'>{table_name}</h5>
         <div className='my-0 ml-auto ' data-table-id-status={table_id}>
           Status:{' '}
           <span className={`badge badge-pill badge-${badgeColor}`}>
@@ -56,7 +56,7 @@ const TableList = ({ table, loadDashboard }) => {
             className='btn btn-danger ml-auto'
             data-table-id-finish={table_id}
           >
-            <i class='fas fa-check-circle'></i> Finish
+            <i className='fas fa-check-circle'></i> Finish
           </button>
         )}
       </div>

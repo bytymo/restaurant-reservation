@@ -37,12 +37,10 @@ function Dashboard({ date, setDate }) {
 
   return (
     <main>
-      <div className='group-item d-lg-inline-block'>
-        <h1>Dashboard</h1>
-        <div className='d-md-flex'>
-          <h4 className='mb-0'>Reservations for {date}</h4>
-        </div>
-      </div>
+      <h1 className='text-center pt-4'>Dashboard</h1>
+      <h3 className='text-white text-center pb-4 mb-0'>
+        Reservations for {date}
+      </h3>
 
       <div className=' w-100'>
         <DashButtons date={date} setDate={setDate} />
@@ -51,10 +49,12 @@ function Dashboard({ date, setDate }) {
         <div className='container align-self-center'>
           <div className='row justify-content-around'>
             <div className='group col-lg-6 w-100'>
-              <h3>Reservations:</h3>
+              <h3 className='text-light'>Reservations:</h3>
               <div className='group-item'>
                 {reservations.length === 0 && (
-                  <h5>There are no reservations for {date}</h5>
+                  <h5 className='text-white'>
+                    There are no reservations for {date}
+                  </h5>
                 )}
 
                 {reservations.map((reservation) => (
@@ -67,7 +67,7 @@ function Dashboard({ date, setDate }) {
             </div>
 
             <div className='group col-lg-5 w-100'>
-              <h3>Tables:</h3>
+              <h3 className='text-white'>Tables:</h3>
               <div className='group-item'>
                 {tables.map((table) => (
                   <TableList
