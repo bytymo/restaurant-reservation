@@ -28,14 +28,12 @@ const ReservationList = ({ reservation }) => {
   }
 
   return (
-    <div className='card my-2'>
+    <div className='card card-bg text-white my-2'>
       <div className='card-header d-flex align-items-center'>
-        <h4 className='my-0'>
+        <h5 className='my-0'>
           {reservation_time.slice(0, 5)} - {last_name}, {first_name}
-        </h4>
-        <p className='ml-auto my-0'>
-          Party: <span className='badge badge-secondary'>{people}</span>
-        </p>
+        </h5>
+        <p className='ml-auto my-0'>Party: {people}</p>
       </div>
       <div className='card-body d-flex align-items-center'>
         <h5 data-reservation-id-status={reservation_id} className='my-0'>
@@ -49,13 +47,13 @@ const ReservationList = ({ reservation }) => {
                   to={`/reservations/${reservation_id}/seat`}
                   className='btn btn-dark d-block d-md-inline'
                 >
-                  <i class='fas fa-arrow-circle-down'></i> Seat
+                  <i className='fas fa-arrow-circle-down'></i> Seat
                 </Link>{' '}
                 <Link
                   to={`/reservations/${reservation_id}/edit`}
                   className='btn btn-dark d-block d-md-inline'
                 >
-                  <i class='fas fa-pencil-alt'></i> Edit
+                  <i className='fas fa-pencil-alt'></i> Edit
                 </Link>
               </div>
               <div className='col'>
@@ -64,7 +62,7 @@ const ReservationList = ({ reservation }) => {
                   onClick={cancelReservation}
                   className='btn btn-danger d-block d-md-inline w-100'
                 >
-                  <i class='fas fa-ban'></i> Cancel
+                  <i className='fas fa-ban'></i> Cancel
                 </button>
               </div>
             </Fragment>

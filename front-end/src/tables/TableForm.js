@@ -19,23 +19,11 @@ const TableForm = () => {
   const addTable = async (table) => {
     await axios
       .post(`${url}/tables`, { data: table })
-      .then((res) => (res.status === 201 ? history.push('/dashboard') : null))
+      .then((res) => res.status === 201 && history.push('/dashboard'))
       .catch((err) => {
         setTablesError({ message: err.response.data.error })
       })
   }
-
-  // Update Table
-  // const updateTable = async (table) => {
-  //   await axios
-  //     .put(`${url}/tables/${table.table_id}`, {
-  //       data: table,
-  //     })
-  //     .then((res) => res.status === 201 && history.push('/dashboard'))
-  //     .catch((err) => {
-  //       setTablesError({ message: err.response.data.error })
-  //     })
-  // }
 
   const onChange = (e) =>
     setTable({ ...table, [e.target.name]: e.target.value })
@@ -48,17 +36,13 @@ const TableForm = () => {
       capacity: Number(capacity),
     }
 
-    // if ( currTable === null) {
     addTable(newTable)
-    // } else {
-    //   updateTable(newTable)
-    // }
   }
 
   return (
-    <div>
+    <div className='row justify-content-center'>
       <form className='col-lg-10' onSubmit={onSubmit}>
-        <h3 className='text-center py-4'>New Table</h3>
+        <h1 className='text-center py-4'>New Table</h1>
 
         <ErrorAlert error={tablesError} />
         <div className='form-group'>
@@ -88,7 +72,7 @@ const TableForm = () => {
         </div>
 
         <div className='btns mt-2'>
-          <button className='btn btn-primary mr-2' type='submit'>
+          <button className='btn btn-dark mr-2' type='submit'>
             Submit
           </button>
 

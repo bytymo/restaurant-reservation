@@ -41,12 +41,13 @@ const SeatForm = () => {
   }
 
   return (
-    <div>
-      <h1>
-        {reservation.last_name} - Party: {reservation.people}
-      </h1>
+    <div className='row justify-content-center'>
+      <h1 className='text-center py-4'>Seat Reservation</h1>
       <ErrorAlert error={errors} />
-      <form onSubmit={onSubmit}>
+      <form className='col-lg-10' onSubmit={onSubmit}>
+        <h3 className='text-white'>
+          {reservation.last_name} / Party Size: {reservation.people}
+        </h3>
         <div className='form-group'>
           <label htmlFor='select_table'></label>
           <select
@@ -68,7 +69,7 @@ const SeatForm = () => {
           </select>
         </div>
         <div className='btns mt-2'>
-          <button className='btn btn-primary mr-2' type='submit'>
+          <button className='btn btn-dark mr-2' type='submit'>
             Submit
           </button>
 

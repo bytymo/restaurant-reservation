@@ -1,6 +1,7 @@
-import React from 'react'
-
+import React, { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
+import * as FaIcons from 'react-icons/fa'
+import * as AiIcons from 'react-icons/ai'
 
 import logo from '../images/logo.png'
 
@@ -10,57 +11,64 @@ import logo from '../images/logo.png'
  * @returns {JSX.Element}
  */
 
-function Menu() {
+const Menu = () => {
+  const [sidebar, setSidebar] = useState(false)
+
+  const showSidebar = () => setSidebar(!sidebar)
+
   return (
-    <nav className='navbar navbar-dark align-items-start p-0'>
-      <div className='container-fluid d-flex flex-column p-0'>
-        <div className='sidebar-brand-text mx-3 my-3'>
-          <img src={logo} alt='periodic tables logo' />
-        </div>
-        <Link
-          className='navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0'
-          to='/'
-        >
-          <div className='sidebar-brand-text mx-3'>
-            <span>Periodic Tables</span>
-          </div>
+    <Fragment>
+      <div className='navbar'>
+        <Link to='#' className='menu-bars'>
+          <FaIcons.FaBars onClick={showSidebar} id='hamMenu' />
         </Link>
-        <hr className='sidebar-divider my-0' />
-        <ul className='nav navbar-nav text-light' id='accordionSidebar'>
-          <li className='nav-item'>
+      </div>
+      <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+        <ul className='nav-menu-items' onClick={showSidebar}>
+          <li className='navbar-toggle'>
+            <Link to='#' className='menu-bars'>
+              <AiIcons.AiOutlineClose />
+            </Link>
+          </li>
+          <Link
+            className='navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0 mb-3'
+            to='/'
+          >
+            <div className='mx-3'>
+              <div className='text-center my-3 mx-0'>
+                <img src={logo} alt='periodic tables logo' />
+              </div>{' '}
+              <span>Periodic Tables</span>
+            </div>
+          </Link>
+
+          <li className='nav-text'>
             <Link className='nav-link' to='/dashboard'>
               <span className='oi oi-dashboard' />
               &nbsp;Dashboard
             </Link>
           </li>
-          <li className='nav-item'>
+          <li className='nav-text'>
             <Link className='nav-link' to='/search'>
               <span className='oi oi-magnifying-glass' />
               &nbsp;Search
             </Link>
           </li>
-          <li className='nav-item'>
+          <li className='nav-text'>
             <Link className='nav-link' to='/reservations/new'>
               <span className='oi oi-plus' />
               &nbsp;New Reservation
             </Link>
           </li>
-          <li className='nav-item'>
+          <li className='nav-text'>
             <Link className='nav-link' to='/tables/new'>
               <span className='oi oi-layers' />
               &nbsp;New Table
             </Link>
           </li>
         </ul>
-        <div className='text-center d-none d-md-inline'>
-          <button
-            className='btn rounded-circle border-0'
-            id='sidebarToggle'
-            type='button'
-          />
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </Fragment>
   )
 }
 
