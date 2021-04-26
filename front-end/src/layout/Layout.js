@@ -1,5 +1,4 @@
 import React from 'react'
-import Menu from './Menu'
 import Routes from './Routes'
 
 import './Layout.css'
@@ -14,11 +13,8 @@ import './Layout.css'
 function Layout() {
   return (
     <div className='container-fluid'>
-      <div className='row'>
-        {/* <div className='col-md-2 side-bar'>
-          <Menu />
-        </div> */}
-        <div className='col m-0 p-0'>
+      <div>
+        <div className='m-0 p-0'>
           <div className='backSplash'></div>
           <div className='routes'>
             <Routes />
