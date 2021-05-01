@@ -1,9 +1,9 @@
-import React, { Fragment, useState } from 'react'
-import { Link } from 'react-router-dom'
-import * as FaIcons from 'react-icons/fa'
-import * as AiIcons from 'react-icons/ai'
+import React, { Fragment, useState } from 'react';
+import { Link } from 'react-router-dom';
+import * as FaIcons from 'react-icons/fa';
+import * as AiIcons from 'react-icons/ai';
 
-import logo from '../images/logo.png'
+import logo from '../images/logo.png';
 
 /**
  * Defines the menu for this application.
@@ -12,9 +12,9 @@ import logo from '../images/logo.png'
  */
 
 const Menu = () => {
-  const [sidebar, setSidebar] = useState(false)
+  const [sidebar, setSidebar] = useState(false);
 
-  const showSidebar = () => setSidebar(!sidebar)
+  const showSidebar = () => setSidebar(!sidebar);
 
   return (
     <Fragment>
@@ -69,7 +69,7 @@ const Menu = () => {
         </ul>
       </nav>
     </Fragment>
-  )
-}
+  );
+};
 
-export default Menu
+export default Menu;
